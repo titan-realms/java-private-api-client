@@ -15,6 +15,8 @@ public class Punishment {
 
     private final String id;
 
+    private final PunishmentType punishmentType;
+
     private final Instant timestamp;
     private final Instant expiry;
 
@@ -26,7 +28,8 @@ public class Punishment {
     private final boolean notified;
     private final ReversalInfo reversalInfo;
 
-    public Punishment(Instant timestamp, Instant expiry, UUID punisher, UUID target, String reason, boolean notified) {
+    public Punishment(PunishmentType punishmentType, Instant timestamp, Instant expiry, UUID punisher, UUID target, String reason, boolean notified) {
+        this.punishmentType = punishmentType;
         this.id = null;
         this.timestamp = timestamp;
         this.expiry = expiry;

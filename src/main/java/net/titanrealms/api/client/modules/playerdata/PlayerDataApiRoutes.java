@@ -8,5 +8,6 @@ public class PlayerDataApiRoutes {
 
     public static final Route UPDATE_PLAYER = Route.create(BASE_URL, HttpMethod.PUT, "playerData/");
     public static final Route GET_PLAYER = Route.create(BASE_URL, HttpMethod.GET, "playerData/{playerId}/");
-    public static final Route SEARCH_PLAYER = Route.create(BASE_URL, HttpMethod.GET, "playerData/search/{username}/");
+    public static final Route FIND_PLAYER_BY_USERNAME = Route.create(BASE_URL, HttpMethod.GET, "playerData/find/{username}/");
+    public static final Route SEARCH_PLAYER_BY_USERNAME = Route.create(BASE_URL, HttpMethod.GET, "playerData/search/{username}/", true);
 }

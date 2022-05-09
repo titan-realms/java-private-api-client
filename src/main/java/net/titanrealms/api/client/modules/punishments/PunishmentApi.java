@@ -4,14 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
-import net.titanrealms.api.client.model.language.Language;
 import net.titanrealms.api.client.model.punishment.Punishment;
 import net.titanrealms.api.client.model.punishment.ReversalInfo;
-import net.titanrealms.api.client.model.server.ServerType;
 import net.titanrealms.api.client.model.spring.Page;
 import net.titanrealms.api.client.model.spring.Pageable;
 import net.titanrealms.api.client.model.spring.Sort;
-import net.titanrealms.api.client.modules.language.redis.RedisLanguageUpdateSubscription;
 import net.titanrealms.api.client.modules.punishments.redis.RedisPunishmentSubscription;
 import net.titanrealms.api.client.utils.gson.InstantConverter;
 import net.titanrealms.api.client.utils.gson.PageConverter;
@@ -24,7 +21,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -32,14 +28,20 @@ import java.util.function.Consumer;
 public class PunishmentApi {
     private static final Type PUNISHMENT_PAGE_TYPE = new TypeToken<Page<Punishment>>() {}.getType();
     private static final Type PUNISHMENT_LIST_TYPE = new TypeToken<ArrayList<Punishment>>() {}.getType();
+
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(InstantConverter.TYPE, new InstantConverter())
             .registerTypeAdapter(ReversalInfoConverter.TYPE, new ReversalInfoConverter())
             .registerTypeAdapter(PUNISHMENT_PAGE_TYPE, new PageConverter<Punishment>(new TypeToken<ArrayList<Punishment>>(){}.getType()))
             .create();
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final Jedis jedis = new Jedis();
+    private final @NotNull HttpClient httpClient;
+    private final @NotNull Jedis jedis;
+
+    public PunishmentApi(@NotNull HttpClient httpClient, @NotNull Jedis jedis) {
+        this.httpClient = httpClient;
+        this.jedis = jedis;
+    }
 
     public @NotNull CompletableFuture<Punishment> createPunishment(@NotNull Punishment punishment) {
         return this.httpClient.sendAsync(PunishmentApiRoutes.CREATE_PUNISHMENT.compile(GSON).withBody(punishment).toRequest(), HttpResponse.BodyHandlers.ofString())

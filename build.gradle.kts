@@ -15,6 +15,8 @@ repositories {
 dependencies {
     api("redis.clients:jedis:4.2.2")
 
+    implementation("com.google.guava:guava:31.1-jre")
+
     api("com.google.code.gson:gson:2.9.0")
     api("org.jetbrains:annotations:23.0.0")
 }
