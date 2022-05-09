@@ -35,7 +35,8 @@ public class CompiledRoute {
                 .addParameter("size", String.valueOf(pageable.size()));
     }
 
-    public @NotNull CompiledRoute withSort(@NotNull Sort sort) {
+    public @NotNull CompiledRoute withSort(@Nullable Sort sort) {
+        if (sort == null) return this;
         return this.addParameter("sort", sort.property() + "." + sort.direction().toString().toLowerCase());
     }
 

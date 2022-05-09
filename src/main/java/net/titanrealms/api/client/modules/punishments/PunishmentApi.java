@@ -11,9 +11,11 @@ import net.titanrealms.api.client.model.spring.Pageable;
 import net.titanrealms.api.client.model.spring.Sort;
 import net.titanrealms.api.client.modules.punishments.redis.RedisPunishmentSubscription;
 import net.titanrealms.api.client.utils.gson.InstantConverter;
+import net.titanrealms.api.client.utils.gson.ObjectIdConverter;
 import net.titanrealms.api.client.utils.gson.PageConverter;
 import net.titanrealms.api.client.utils.gson.ReversalInfoConverter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.Type;
@@ -31,6 +33,7 @@ public class PunishmentApi {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(InstantConverter.TYPE, new InstantConverter())
+            .registerTypeAdapter(ObjectIdConverter.TYPE, new ObjectIdConverter())
             .registerTypeAdapter(ReversalInfoConverter.TYPE, new ReversalInfoConverter())
             .registerTypeAdapter(PUNISHMENT_PAGE_TYPE, new PageConverter<Punishment>(new TypeToken<ArrayList<Punishment>>(){}.getType()))
             .create();
@@ -54,7 +57,7 @@ public class PunishmentApi {
     }
 
     @SneakyThrows
-    public @NotNull CompletableFuture<Page<Punishment>> retrievePlayerPunishments(@NotNull UUID target, @NotNull Pageable pageable, @NotNull Sort sort) {
+    public @NotNull CompletableFuture<Page<Punishment>> retrievePlayerPunishments(@NotNull UUID target, @NotNull Pageable pageable, @Nullable Sort sort) {
         return this.httpClient.sendAsync(PunishmentApiRoutes.Player.GET_PUNISHMENTS.compile(GSON, target).withPageable(pageable).withSort(sort).toRequest(), HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> GSON.fromJson(response.body(), PUNISHMENT_PAGE_TYPE));
     }
